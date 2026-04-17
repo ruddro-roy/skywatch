@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "skywatch-api"
+version = "0.1.0"
+description = "skywatch FastAPI backend — hybrid AI weather with CV verification"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+    "pillow>=10.3.0",
+    "numpy>=1.26.0",
+    "scipy>=1.13.0",
+]
+
+[project.optional-dependencies]
+# Vision — comment out if you don't need the ML classifier
+vision = [
+    "torch>=2.3.0",
+    "torchvision>=0.18.0",
+    # Uncomment to enable CLIP zero-shot
+    # "open_clip_torch>=2.24.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.27.0",
+    "ruff>=0.4.0",
+    "black>=24.0.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

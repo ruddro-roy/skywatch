@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  # ──────────────────────────────────────────
+  # FastAPI backend service
+  # ──────────────────────────────────────────
+  api:
+    build:
+      context: ./services/api
+      dockerfile: Dockerfile
+    container_name: skywatch-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - CORS_ORIGINS=http://localhost:3000
+      # Forecast providers — all optional
+      - OPEN_METEO_BASE_URL=${OPEN_METEO_BASE_URL:-https://api.open-meteo.com/v1}
+      - OPENWEATHERMAP_API_KEY=${OPENWEATHERMAP_API_KEY:-}
+      - NVIDIA_NGC_API_KEY=${NVIDIA_NGC_API_KEY:-}
+      - NVIDIA_NIM_BASE_URL=${NVIDIA_NIM_BASE_URL:-https://integrate.api.nvidia.com/v1}
+      # Geolocation — optional, free without key
+      - IPINFO_TOKEN=${IPINFO_TOKEN:-}
+      # Camera sources — optional
+      - WINDY_API_KEY=${WINDY_API_KEY:-}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ──────────────────────────────────────────
+  # Next.js frontend service
+  # ──────────────────────────────────────────
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: skywatch-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+      - NEXT_PUBLIC_DEFAULT_LOCATION=${NEXT_PUBLIC_DEFAULT_LOCATION:-23.8103,90.4125,Dhaka}
+    depends_on:
+      api:
+        condition: service_healthy
+
+networks:
+  default:
+    name: skywatch-network
