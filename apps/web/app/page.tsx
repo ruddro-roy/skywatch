@@ -1,12 +1,12 @@
 "use client";
 
 /**
- * skywatch — Main Dashboard Page
+ * skywatch, main dashboard page.
  *
- * Privacy decisions made here:
- * - NEVER calls navigator.geolocation — uses server-side IP geolocation only
- * - Location is held in React state (memory) only — never written to localStorage by default
- * - User can override via LocationPicker (manual cascading dropdown)
+ * Privacy notes:
+ * - Never calls navigator.geolocation. Uses server-side IP geolocation only.
+ * - Location lives in React state only, not persisted to localStorage by default.
+ * - User can override via LocationPicker (manual city search).
  */
 
 import { useEffect, useState, useCallback } from "react";
@@ -18,7 +18,6 @@ import { EnsembleConfidence } from "@/components/EnsembleConfidence";
 import { fetchGeoIP, fetchWeather, fetchCameras } from "@/lib/api";
 import type { Location, WeatherResponse, CameraResponse } from "@/lib/api";
 
-// Default demo location — Dhaka, Bangladesh (globally neutral choice)
 const DEFAULT_LOCATION: Location = {
   lat: 23.8103,
   lon: 90.4125,
@@ -34,20 +33,13 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [geolocating, setGeolocating] = useState(true);
 
-  // Step 1: Resolve location via server-side IP geolocation (never GPS)
   useEffect(() => {
     async function resolveLocation() {
       setGeolocating(true);
       try {
         const geoResult = await fetchGeoIP();
-        if (geoResult) {
-          setLocation(geoResult);
-        } else {
-          // Fallback to demo default
-          setLocation(DEFAULT_LOCATION);
-        }
+        setLocation(geoResult ?? DEFAULT_LOCATION);
       } catch {
-        // Graceful fallback — never crash on geolocation failure
         setLocation(DEFAULT_LOCATION);
       } finally {
         setGeolocating(false);
@@ -56,7 +48,6 @@ export default function HomePage() {
     resolveLocation();
   }, []);
 
-  // Step 2: Fetch weather + cameras when location is resolved
   const loadData = useCallback(async (loc: Location) => {
     setLoading(true);
     setError(null);
@@ -85,101 +76,83 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero / Header */}
-      <div className="bg-gradient-to-br from-[#082f49] via-[#0c4a6e] to-[#0369a1] px-4 pt-10 pb-16">
-        <div className="mx-auto max-w-7xl">
-          {/* Headline */}
-          <div className="mb-8 text-center animate-fade-in">
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-              Weather, the honest way
-            </h1>
-            <p className="mt-3 text-base text-sky-200 sm:text-lg max-w-2xl mx-auto">
-              Multiple AI models fused into one forecast — verified by real cameras nearby.
-              No GPS tracking. No cookies. No compromise.
-            </p>
-          </div>
+    <div className="mx-auto max-w-6xl px-5 pt-8 pb-12">
+      {/* Page header, minimal */}
+      <div className="mb-8 flex flex-col gap-3 border-b border-rule pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+            {geolocating ? (
+              <span className="text-ink-mute">Detecting location…</span>
+            ) : location ? (
+              <>{location.city}</>
+            ) : (
+              "Forecast"
+            )}
+          </h1>
+          <p className="mt-1 font-sans text-sm text-ink-mute">
+            {location && !geolocating && (
+              <>
+                {[location.region, location.country].filter(Boolean).join(", ")}
+                <span className="mx-2 text-ink-faint">·</span>
+                <span>IP-resolved, not stored</span>
+              </>
+            )}
+          </p>
+        </div>
+        <LocationPicker
+          currentLocation={location}
+          onLocationChange={handleLocationChange}
+        />
+      </div>
 
-          {/* Location bar */}
-          <div className="mx-auto max-w-2xl">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <div className="flex items-center gap-2 text-sky-300 text-sm">
-                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 21s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 10.8-8 10.8z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-                {geolocating ? (
-                  <span className="text-slate-400">Detecting location (city-level, no GPS)…</span>
-                ) : (
-                  <span>
-                    {location?.city}, {location?.country}
-                    {" "}
-                    <span className="text-sky-500/70 text-xs">(IP-resolved, not stored)</span>
-                  </span>
-                )}
-              </div>
-              <div className="sm:ml-auto">
-                <LocationPicker
-                  currentLocation={location}
-                  onLocationChange={handleLocationChange}
-                />
-              </div>
-            </div>
-          </div>
+      {error && (
+        <div className="mb-6 rounded border border-negative/30 bg-paper-panel p-4 font-sans text-sm text-negative">
+          <strong>Error.</strong> {error}{" "}
+          <button
+            onClick={() => location && loadData(location)}
+            className="underline hover:no-underline"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      <div className="grid gap-5 lg:grid-cols-12">
+        <div className="lg:col-span-4">
+          <CurrentConditions
+            weather={weather}
+            location={location}
+            loading={loading || geolocating}
+          />
+        </div>
+
+        <div className="lg:col-span-8">
+          <EnsembleConfidence weather={weather} loading={loading} />
+        </div>
+
+        <div className="lg:col-span-12">
+          <ForecastPanel weather={weather} loading={loading} />
+        </div>
+
+        <div className="lg:col-span-12">
+          <CameraGrid cameras={cameras} loading={loading} location={location} />
         </div>
       </div>
 
-      {/* Dashboard grid */}
-      <div className="mx-auto max-w-7xl px-4 py-8 -mt-8">
-        {error && (
-          <div className="mb-6 rounded-xl border border-red-700/50 bg-red-900/20 p-4 text-sm text-red-300">
-            <strong>Error:</strong> {error}
-            {" — "}
-            <button
-              onClick={() => location && loadData(location)}
-              className="underline hover:text-red-200"
-            >
-              Retry
-            </button>
-          </div>
+      <div className="mt-8 font-sans text-xs text-ink-faint">
+        Forecast:{" "}
+        <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">
+          Open-Meteo (ECMWF IFS)
+        </a>
+        {weather?.providers && weather.providers.length > 0 && (
+          <span className="ml-2">
+            {weather.providers.map((p) => (
+              <span key={p} className="provider-tag ml-1">
+                {p}
+              </span>
+            ))}
+          </span>
         )}
-
-        <div className="grid gap-6 lg:grid-cols-12">
-          {/* Current conditions — large card, left */}
-          <div className="lg:col-span-4">
-            <CurrentConditions
-              weather={weather}
-              location={location}
-              loading={loading || geolocating}
-            />
-          </div>
-
-          {/* Ensemble confidence */}
-          <div className="lg:col-span-8">
-            <EnsembleConfidence weather={weather} loading={loading} />
-          </div>
-
-          {/* 7-day forecast — full width */}
-          <div className="lg:col-span-12">
-            <ForecastPanel weather={weather} loading={loading} />
-          </div>
-
-          {/* Camera grid — full width */}
-          <div className="lg:col-span-12">
-            <CameraGrid cameras={cameras} loading={loading} location={location} />
-          </div>
-        </div>
-
-        {/* Data source attribution */}
-        <div className="mt-8 flex flex-wrap gap-3 text-xs text-slate-500">
-          <span>Forecast: </span>
-          <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" className="text-sky-600 hover:text-sky-500">
-            Open-Meteo (ECMWF IFS)
-          </a>
-          {weather?.providers?.map((p) => (
-            <span key={p} className="provider-tag">{p}</span>
-          ))}
-        </div>
       </div>
     </div>
   );

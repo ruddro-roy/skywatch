@@ -1,72 +1,142 @@
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────────────
-   skywatch global styles
-   Uses Tailwind CSS v4 @import syntax
-───────────────────────────────────────────────────── */
+/* skywatch global styles, classic light theme */
 
 @layer base {
   :root {
-    --background: #0c1a2e;
-    --foreground: #e2e8f0;
-    --card: #0f2744;
-    --card-border: #1e3a5f;
-    --accent: #0ea5e9;
-    --accent-hover: #38bdf8;
-    --muted: #64748b;
-    --muted-foreground: #94a3b8;
+    --paper:        #fbfaf7;
+    --paper-raised: #ffffff;
+    --paper-panel:  #f5f2ea;
+    --ink:          #1a1a1a;
+    --ink-soft:     #2a2a2a;
+    --ink-mute:     #5a5a5a;
+    --ink-faint:    #8a8a8a;
+    --rule:         #e5ddc9;
+    --accent:       #5a3e1b;
+    --accent-soft:  #8a6a3e;
+    --positive:     #3f6b3c;
   }
 
-  * {
-    @apply border-slate-700;
-  }
-
-  html {
-    @apply antialiased;
-  }
-
+  html { @apply antialiased; }
   body {
-    background-color: var(--background);
-    color: var(--foreground);
-    @apply font-sans;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: "Source Serif 4", Charter, "Iowan Old Style", Georgia, "Times New Roman", serif;
+    font-feature-settings: "kern", "liga", "onum";
+    font-size: 17px;
+    line-height: 1.65;
+  }
+
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+  a:hover { color: var(--ink); }
+
+  h1, h2, h3, h4 {
+    font-family: "Source Serif 4", Charter, Georgia, serif;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    font-weight: 700;
   }
 }
 
 @layer components {
   /* Card container */
   .sw-card {
-    background-color: var(--card);
-    border: 1px solid var(--card-border);
-    @apply rounded-xl p-4 md:p-6;
+    background-color: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .sw-card { padding: 1.5rem; }
   }
 
-  /* Condition badge */
-  .condition-badge {
-    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium;
+  /* Section heading inside a card */
+  .sw-card-heading {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-family: "Inter", system-ui, sans-serif;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Data readouts use a neutral sans or mono so numbers scan cleanly */
+  .sw-num {
+    font-family: "Inter", system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  .sw-label {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.78rem;
+    color: var(--ink-mute);
+    letter-spacing: 0.02em;
+  }
+
+  .sw-divider {
+    border-top: 1px solid var(--rule);
   }
 
   /* Provider tag */
   .provider-tag {
-    @apply inline-block rounded bg-slate-700/60 px-2 py-0.5 text-xs text-slate-300;
+    display: inline-block;
+    padding: 0.12rem 0.5rem;
+    border: 1px solid var(--rule);
+    background: var(--paper-panel);
+    color: var(--ink-mute);
+    border-radius: 2px;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.72rem;
   }
 
   /* Skeleton loader */
   .skeleton {
-    @apply animate-pulse rounded bg-slate-700/50;
+    background: linear-gradient(90deg, #f0ece4 0%, #e8e2d3 50%, #f0ece4 100%);
+    background-size: 200% 100%;
+    animation: sw-shimmer 1.4s linear infinite;
+    border-radius: 2px;
+  }
+
+  /* Live dot, used in the page header and live sections */
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--positive);
+    vertical-align: middle;
+    animation: sw-pulse 2s infinite;
+  }
+
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 0.18rem 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--paper-panel);
   }
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+@keyframes sw-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
-::-webkit-scrollbar-track {
-  @apply bg-slate-900;
+@keyframes sw-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(63,107,60,0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(63,107,60,0); }
+  100% { box-shadow: 0 0 0 0 rgba(63,107,60,0); }
 }
-::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-slate-600;
-}
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-500;
-}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d8d0bc; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #b8ae94; }

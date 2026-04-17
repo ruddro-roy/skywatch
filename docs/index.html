@@ -74,7 +74,6 @@
   li { margin-bottom: 0.3rem; }
 
   .wrap { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
-  .wrap-wide { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
 
   header.masthead {
     border-bottom: 1px solid #e5ddc9;
@@ -147,13 +146,8 @@
   }
   td.status { white-space: nowrap; font-size: 0.88rem; color: #5a5a5a; }
 
-  .figure-full {
-    margin: 2rem 0;
-  }
-  .figure-full img {
-    border: 1px solid #e5ddc9;
-    border-radius: 2px;
-  }
+  .figure-full { margin: 2rem 0; }
+  .figure-full img { border: 1px solid #e5ddc9; border-radius: 2px; }
 
   .camera-card {
     background: #f5f2ea;
@@ -162,10 +156,7 @@
     padding: 1.5rem;
     margin: 2rem 0;
   }
-  .camera-card h3 {
-    margin-top: 0;
-    font-size: 1rem;
-  }
+  .camera-card h3 { margin-top: 0; font-size: 1rem; }
   .camera-meta {
     display: grid;
     grid-template-columns: max-content 1fr;
@@ -177,6 +168,58 @@
   .camera-meta dt { font-weight: 600; color: #111; }
   .camera-meta dd { margin: 0; }
 
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5a3e1b;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid #c8bfa6;
+    border-radius: 2px;
+    background: #faf6ec;
+    margin-left: 0.6rem;
+    vertical-align: middle;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+  }
+  .live-pill .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #6e9955;
+    box-shadow: 0 0 0 0 rgba(110,153,85,0.7);
+    animation: live-pulse 2s infinite;
+  }
+  @keyframes live-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(110,153,85,0.55); }
+    70%  { box-shadow: 0 0 0 8px rgba(110,153,85,0); }
+    100% { box-shadow: 0 0 0 0 rgba(110,153,85,0); }
+  }
+
+  .live-meta {
+    font-size: 0.78rem;
+    color: #5a5a5a;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    margin-top: 0.5rem;
+  }
+  .live-img-wrap {
+    position: relative;
+    background: #f5f2ea;
+    min-height: 240px;
+    border: 1px solid #e5ddc9;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .live-img-wrap img { display: block; width: 100%; }
+  .live-img-wrap .spinner {
+    position: absolute; inset: 0; display: flex;
+    align-items: center; justify-content: center;
+    color: #8a7a52; font-size: 0.85rem;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+  }
+  .live-img-wrap.loaded .spinner { display: none; }
+
   footer.colophon {
     margin-top: 4rem;
     padding-top: 1.5rem;
@@ -187,19 +230,12 @@
   }
   footer.colophon p { margin-bottom: 0.5rem; }
 
-  .small-caps {
-    font-variant-caps: all-small-caps;
-    letter-spacing: 0.05em;
-    color: #5a3e1b;
-    font-weight: 600;
-    font-size: 0.82rem;
-  }
-
   @media (max-width: 640px) {
     body { font-size: 17px; }
     h1 { font-size: 1.8rem; }
     .wrap { padding: 2rem 1.2rem 3rem; }
     .lede::first-letter { font-size: 2.6rem; }
+    .live-pill { margin-left: 0; margin-top: 0.4rem; display: inline-flex; }
   }
 </style>
 </head>
@@ -211,7 +247,7 @@
     <nav class="masthead-nav">
       <a href="#shots">Screenshots</a>
       <a href="#status">Status</a>
-      <a href="#camera">Camera proof</a>
+      <a href="#camera">Live proof</a>
       <a href="#run">Run it</a>
       <a href="https://github.com/ruddro-roy/skywatch">GitHub</a>
     </nav>
@@ -224,85 +260,92 @@
   <p class="byline">Version 0.1 · Captured April 17, 2026 · MIT licensed</p>
 
   <p class="lede">
-    skywatch is a small weather prototype. It pulls a 7-day forecast from Open-Meteo, resolves your city from the server-side IP without ever calling the browser Geolocation API, and can optionally run a computer-vision check against public webcams. The screenshots below are straight captures from the running app; no mockups.
+    skywatch is a small weather prototype. It pulls a 7-day forecast from Open-Meteo, resolves the user's city server-side from the IP without calling the browser Geolocation API, and can run a computer-vision check against public webcams. The screenshots below are straight captures from the running app.
   </p>
 
   <h2 id="shots">Screenshots</h2>
 
   <figure class="figure-full">
-    <img src="screenshots/02-hero-dhaka.png" alt="Hero view of skywatch showing Dhaka, 31°C, feels like 39°C, ensemble confidence bar at 100%, four provider slots." loading="eager" />
-    <figcaption>Figure 1. Hero view, Dhaka. Live Open-Meteo reading at 31°C, feels like 39°C. Only one provider is active in v0.1, so the ensemble bar sits at 100%.</figcaption>
+    <img src="screenshots/02-hero-dhaka.png" alt="Hero view of skywatch showing Dhaka, 31°C, feels like 39°C." loading="eager" />
+    <figcaption>Figure 1. Hero view, Dhaka. Open-Meteo reading at 31°C, feels like 39°C.</figcaption>
   </figure>
 
   <figure class="figure-full">
-    <img src="screenshots/01-dashboard-dhaka.png" alt="Full skywatch dashboard for Dhaka with hero, ensemble panel, 7-day chart, daily cards, and cameras section." loading="lazy" />
-    <figcaption>Figure 2. Full dashboard, Dhaka. 7-day Recharts chart, daily cards, and the cameras section.</figcaption>
+    <img src="screenshots/01-dashboard-dhaka.png" alt="Full skywatch dashboard for Dhaka." loading="lazy" />
+    <figcaption>Figure 2. Full dashboard, Dhaka. 7-day chart, daily cards, and the cameras section.</figcaption>
   </figure>
 
   <figure class="figure-full">
-    <img src="screenshots/03-dashboard-tokyo.png" alt="skywatch dashboard switched to Tokyo, 19°C, feels like 18°C, 41% humidity, rain Thursday." loading="lazy" />
-    <figcaption>Figure 3. Tokyo. Same session, different city, via the cascading picker. ECMWF IFS had 19°C, 41% humidity, and rain on Thursday at 69% probability when this was captured.</figcaption>
+    <img src="screenshots/03-dashboard-tokyo.png" alt="skywatch dashboard switched to Tokyo." loading="lazy" />
+    <figcaption>Figure 3. Tokyo. Same session, different city.</figcaption>
   </figure>
 
   <figure class="figure-full">
-    <img src="screenshots/05-ensemble-forecast.png" alt="Close-up of the ensemble confidence panel with per-provider weights, fused temperature, and a 7-day chart." loading="lazy" />
-    <figcaption>Figure 4. Ensemble panel close-up. Per-provider weights, fused temperature, daily cards.</figcaption>
+    <img src="screenshots/05-ensemble-forecast.png" alt="Close-up of the ensemble confidence panel." loading="lazy" />
+    <figcaption>Figure 4. Ensemble panel close-up.</figcaption>
   </figure>
 
   <figure class="figure-full">
-    <img src="screenshots/04-cameras-section.png" alt="Cameras section showing the empty state with a ToS-compliant sources only label." loading="lazy" />
-    <figcaption>Figure 5. Cameras section. Wired up and waiting for a Windy API key. Drop a key into <code>.env</code> and the panel populates.</figcaption>
+    <img src="screenshots/04-cameras-section.png" alt="Cameras section showing the empty state." loading="lazy" />
+    <figcaption>Figure 5. Cameras section. Wired up and waiting for a Windy API key.</figcaption>
   </figure>
 
-  <h2 id="camera">Camera proof</h2>
+  <h2 id="camera">Live proof <span class="live-pill"><span class="dot"></span>Live</span></h2>
   <p>
-    One of the ideas behind skywatch is to cross-check a forecast against what a public camera is actually showing. Three legally-sourced frames are shown below, each captured on April 17, 2026 and compared against the Open-Meteo forecast for the same coordinates at the same minute. These are separate checks from the Dhaka and Tokyo dashboard screenshots above; they exist to show the camera-vs-forecast pipeline works end to end.
+    The three panels below cross-check a real public webcam against the current Open-Meteo forecast for the same coordinates. Everything on this page is fetched by your browser when the page loads: the camera image, the forecast, and the timestamp. Reload the page and you get a fresh pair. There are no cached frames stored in the repo for this section.
   </p>
+  <p class="live-meta" id="live-now">Loading current readings…</p>
 
   <h3>Camera 1. E6 Alsgård, Nordland, Norway</h3>
   <figure class="figure-full">
-    <img src="cameras/norway-alsgard-e6.jpg" alt="E6 Alsgård webcam frame, 2026-04-17 08:17 local, dry road and overcast sky." loading="lazy" />
-    <figcaption>Figure 6. Statens vegvesen camera at E6 Alsgård, 49 m elevation, direction Mosjøen. Timestamp burned into frame: 2026-04-17 08:17:02.</figcaption>
+    <div class="live-img-wrap" id="wrap-alsgard">
+      <div class="spinner">Fetching current frame…</div>
+      <img id="img-alsgard" alt="Live E6 Alsgård webcam frame, currently loading" loading="lazy" />
+    </div>
+    <figcaption id="cap-alsgard">Live frame from Statens vegvesen, E6 Alsgård. 65.83°N, 13.31°E.</figcaption>
   </figure>
   <div class="camera-card">
-    <dl class="camera-meta">
-      <dt>What the camera shows</dt><dd>Daylight, dry road, thin high cloud, coniferous forest, no precipitation</dd>
-      <dt>Open-Meteo at 65.83 N, 13.31 E</dt><dd>3.6 °C, feels like 1.1 °C, 29% cloud cover, 70% humidity, 1.4 km/h wind, WMO code 1 (mainly clear)</dd>
-      <dt>Match</dt><dd>Forecast and camera agree. Mostly clear with some high cloud, cool, dry, calm.</dd>
-      <dt>Source</dt><dd><a href="https://kamera.atlas.vegvesen.no/api/images/3000946_1">kamera.atlas.vegvesen.no/api/images/3000946_1</a>, Norwegian Licence for Open Government Data</dd>
+    <dl class="camera-meta" id="meta-alsgard">
+      <dt>Camera feed</dt><dd><a href="https://kamera.atlas.vegvesen.no/api/images/3000946_1">kamera.atlas.vegvesen.no/api/images/3000946_1</a>, Norwegian Licence for Open Government Data</dd>
+      <dt>Forecast (live)</dt><dd data-field="forecast">Loading…</dd>
+      <dt>Camera fetched</dt><dd data-field="ts">—</dd>
     </dl>
   </div>
 
   <h3>Camera 2. E6 Aisaroaivi, Finnmark, Norway</h3>
   <figure class="figure-full">
-    <img src="cameras/norway-aisaroaivi-skaidi.jpg" alt="E6 Aisaroaivi webcam frame, 2026-04-17 08:16 local, arctic tundra with snow on ground." loading="lazy" />
-    <figcaption>Figure 7. Statens vegvesen camera at E6 Aisaroaivi, 238 m elevation, direction Skaidi. Timestamp: 2026-04-17 08:16:16. Near 70° N.</figcaption>
+    <div class="live-img-wrap" id="wrap-aisaroaivi">
+      <div class="spinner">Fetching current frame…</div>
+      <img id="img-aisaroaivi" alt="Live E6 Aisaroaivi webcam frame, currently loading" loading="lazy" />
+    </div>
+    <figcaption id="cap-aisaroaivi">Live frame from Statens vegvesen, E6 Aisaroaivi near 70°N. 70.28°N, 24.59°E.</figcaption>
   </figure>
   <div class="camera-card">
-    <dl class="camera-meta">
-      <dt>What the camera shows</dt><dd>Arctic tundra, heavy snow on ground, cleared road, mixed sun and high cloud</dd>
-      <dt>Open-Meteo at 70.28 N, 24.59 E</dt><dd>2.1 °C, feels like −0.5 °C, 80% cloud cover, 96% humidity, 5.4 km/h wind, WMO code 3 (overcast)</dd>
-      <dt>Match</dt><dd>Consistent. Near-freezing temperature explains lingering snow; the overcast reading matches the hazy high-cloud look in the frame.</dd>
-      <dt>Source</dt><dd><a href="https://kamera.atlas.vegvesen.no/api/images/2000065_2">kamera.atlas.vegvesen.no/api/images/2000065_2</a>, Norwegian Licence for Open Government Data</dd>
+    <dl class="camera-meta" id="meta-aisaroaivi">
+      <dt>Camera feed</dt><dd><a href="https://kamera.atlas.vegvesen.no/api/images/2000065_2">kamera.atlas.vegvesen.no/api/images/2000065_2</a>, NLOD</dd>
+      <dt>Forecast (live)</dt><dd data-field="forecast">Loading…</dd>
+      <dt>Camera fetched</dt><dd data-field="ts">—</dd>
     </dl>
   </div>
 
   <h3>Camera 3. NOAA GLERL, Chicago, USA</h3>
   <figure class="figure-full">
-    <img src="cameras/chicago-glerl-chi01.jpg" alt="NOAA GLERL Chicago skyline webcam, 01:00 CDT, near-black frame consistent with overnight fog." loading="lazy" />
-    <figcaption>Figure 8. NOAA Great Lakes Environmental Research Laboratory, Harrison-Dever Crib station, 01:00 CDT.</figcaption>
+    <div class="live-img-wrap" id="wrap-chicago">
+      <div class="spinner">Fetching current frame…</div>
+      <img id="img-chicago" alt="Live NOAA GLERL Chicago skyline webcam frame" loading="lazy" />
+    </div>
+    <figcaption id="cap-chicago">Live frame from NOAA Great Lakes Environmental Research Laboratory, Harrison-Dever Crib, Chicago.</figcaption>
   </figure>
   <div class="camera-card">
-    <dl class="camera-meta">
-      <dt>What the camera shows</dt><dd>Night scene, near-black, no visible skyline, a single distant light</dd>
-      <dt>On-station readings</dt><dd>6.7 °C air, 6.8 °C dew point, 100% relative humidity, 0.0 kts wind from the east</dd>
-      <dt>Match</dt><dd>Dew point equal to air temperature at 100% humidity is the textbook fog signature. The featureless dark frame is what you would expect when the camera is sitting inside low cloud or fog at night.</dd>
-      <dt>Source</dt><dd><a href="https://www.glerl.noaa.gov/metdata/chi/chi01.jpg">glerl.noaa.gov/metdata/chi/chi01.jpg</a>, public domain (NOAA)</dd>
+    <dl class="camera-meta" id="meta-chicago">
+      <dt>Camera feed</dt><dd><a href="https://www.glerl.noaa.gov/metdata/chi/chi01.jpg">glerl.noaa.gov/metdata/chi/chi01.jpg</a>, public domain (NOAA)</dd>
+      <dt>Forecast (live)</dt><dd data-field="forecast">Loading…</dd>
+      <dt>Camera fetched</dt><dd data-field="ts">—</dd>
     </dl>
   </div>
 
-  <p style="font-size: 0.9rem; color: #5a5a5a; margin-top: 1.5rem;">
-    Full capture metadata, including coordinates and raw forecast values, is in <a href="https://github.com/ruddro-roy/skywatch/blob/main/docs/cameras/readings.json">docs/cameras/readings.json</a>. No authentication was used. The same URLs will return updated frames if you open them now.
+  <p style="font-size: 0.85rem; color: #5a5a5a; margin-top: 1.5rem;">
+    A note on timing. The Norwegian cameras are above the Arctic Circle and in northern Norway, so between roughly 22:00 and 04:00 UTC you will see night frames. The Chicago camera is 6 time zones west and shows night from roughly 02:00 to 12:00 UTC. If you open the page in the middle of the night at all three locations, the frames will be dark, and that is itself a consistency check.
   </p>
 
   <h2 id="status">Status</h2>
@@ -317,8 +360,8 @@
       <tr><td>IP to city geolocation (ipapi.co)</td><td class="status">Live</td></tr>
       <tr><td>Cascading city picker</td><td class="status">Live</td></tr>
       <tr><td>Ensemble fusion engine</td><td class="status">Live, 33 passing tests</td></tr>
-      <tr><td>7-day Recharts chart and daily cards</td><td class="status">Live</td></tr>
-      <tr><td>HSV + Sobel heuristic classifier</td><td class="status">Live</td></tr>
+      <tr><td>7-day chart and daily cards</td><td class="status">Live</td></tr>
+      <tr><td>HSV and Sobel heuristic classifier</td><td class="status">Live</td></tr>
       <tr><td>US DOT 511 camera integration</td><td class="status">Live (public data)</td></tr>
       <tr><td>OpenWeatherMap provider</td><td class="status">Needs key</td></tr>
       <tr><td>Windy webcam integration</td><td class="status">Needs key</td></tr>
@@ -343,12 +386,104 @@ docker-compose up</code></pre>
     <p>
       Forecast data by <a href="https://open-meteo.com">Open-Meteo</a> (ECMWF IFS).
       Geolocation by <a href="https://ipapi.co">ipapi.co</a>.
-      Camera frame courtesy of <a href="https://www.glerl.noaa.gov/metdata/chi/">NOAA GLERL</a>, public domain.
+      Camera feeds: <a href="https://www.vegvesen.no/trafikk/hvaskjer?layers=ctv">Statens vegvesen</a> under NLOD, <a href="https://www.glerl.noaa.gov/metdata/">NOAA GLERL</a>, public domain.
     </p>
     <p><a href="https://github.com/ruddro-roy/skywatch">Source on GitHub</a></p>
   </footer>
 
 </main>
+
+<script>
+(function() {
+  const cameras = [
+    {
+      id: "alsgard",
+      name: "E6 Alsgård, Nordland",
+      img: "https://kamera.atlas.vegvesen.no/api/images/3000946_1",
+      lat: 65.83,
+      lon: 13.31
+    },
+    {
+      id: "aisaroaivi",
+      name: "E6 Aisaroaivi, Finnmark",
+      img: "https://kamera.atlas.vegvesen.no/api/images/2000065_2",
+      lat: 70.28,
+      lon: 24.59
+    },
+    {
+      id: "chicago",
+      name: "NOAA GLERL Chicago",
+      img: "https://www.glerl.noaa.gov/metdata/chi/chi01.jpg",
+      lat: 41.98,
+      lon: -87.59
+    }
+  ];
+
+  const wmoLabel = {
+    0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+    45: "Fog", 48: "Depositing rime fog",
+    51: "Light drizzle", 53: "Drizzle", 55: "Heavy drizzle",
+    61: "Light rain", 63: "Rain", 65: "Heavy rain",
+    71: "Light snow", 73: "Snow", 75: "Heavy snow",
+    80: "Rain showers", 81: "Heavy rain showers", 82: "Violent rain showers",
+    95: "Thunderstorm"
+  };
+
+  function fmt(n, digits) {
+    if (n == null || isNaN(n)) return "—";
+    return Number(n).toFixed(digits ?? 1);
+  }
+  function pad(n) { return String(n).padStart(2, "0"); }
+
+  const now = new Date();
+  const nowIso = now.getUTCFullYear() + "-" + pad(now.getUTCMonth()+1) + "-" + pad(now.getUTCDate())
+    + " " + pad(now.getUTCHours()) + ":" + pad(now.getUTCMinutes()) + " UTC";
+  document.getElementById("live-now").textContent = "Page loaded at " + nowIso + ". All three panels fetched from source when you opened this page.";
+
+  // Load each camera image with a cache-buster so the browser actually pulls a fresh frame.
+  const bust = Date.now();
+  cameras.forEach(cam => {
+    const wrap = document.getElementById("wrap-" + cam.id);
+    const img = document.getElementById("img-" + cam.id);
+    const meta = document.getElementById("meta-" + cam.id);
+    const tsDd = meta.querySelector('[data-field="ts"]');
+    const fcDd = meta.querySelector('[data-field="forecast"]');
+
+    img.onload = () => {
+      wrap.classList.add("loaded");
+      const t = new Date();
+      tsDd.textContent = t.toLocaleString(undefined, { timeZoneName: "short" });
+    };
+    img.onerror = () => {
+      wrap.classList.add("loaded");
+      wrap.querySelector(".spinner").style.display = "flex";
+      wrap.querySelector(".spinner").textContent = "Camera unreachable right now. Source may be temporarily down.";
+      img.style.display = "none";
+      tsDd.textContent = "Unreachable";
+    };
+    img.src = cam.img + (cam.img.includes("?") ? "&" : "?") + "t=" + bust;
+
+    // Pull current forecast from Open-Meteo. Free, no key.
+    const url = "https://api.open-meteo.com/v1/forecast"
+      + "?latitude=" + cam.lat + "&longitude=" + cam.lon
+      + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,cloud_cover,weather_code,wind_speed_10m,is_day"
+      + "&timezone=UTC";
+    fetch(url)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => {
+        const c = data.current || {};
+        const label = wmoLabel[c.weather_code] || ("WMO code " + c.weather_code);
+        fcDd.innerHTML =
+          fmt(c.temperature_2m, 1) + " °C (feels " + fmt(c.apparent_temperature, 1) + " °C), "
+          + c.relative_humidity_2m + "% RH, " + c.cloud_cover + "% cloud, "
+          + fmt(c.wind_speed_10m, 1) + " km/h wind, "
+          + "<em>" + label + "</em>, "
+          + (c.is_day ? "daytime" : "night");
+      })
+      .catch(() => { fcDd.textContent = "Forecast unreachable right now."; });
+  });
+})();
+</script>
 
 </body>
 </html>

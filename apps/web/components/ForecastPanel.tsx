@@ -1,10 +1,8 @@
 "use client";
 
 /**
- * ForecastPanel — 7-day forecast chart + daily grid
- *
- * Uses Recharts for the temperature chart.
- * Shows ensemble fused values with per-model toggle.
+ * ForecastPanel, 7-day chart + daily grid, classic light theme.
+ * No emoji, no blue gradient. Neutral palette only.
  */
 
 import {
@@ -19,7 +17,7 @@ import {
   Legend,
   Area,
 } from "recharts";
-import { wmoCodeToLabel, wmoCodeToCondition } from "@/lib/api";
+import { wmoCodeToLabel } from "@/lib/api";
 import type { WeatherResponse } from "@/lib/api";
 
 interface ForecastPanelProps {
@@ -27,7 +25,6 @@ interface ForecastPanelProps {
   loading: boolean;
 }
 
-// Format ISO date string to short weekday label
 function formatDay(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00Z");
   const today = new Date();
@@ -36,15 +33,6 @@ function formatDay(dateStr: string): string {
   return d.toLocaleDateString("en", { weekday: "short" });
 }
 
-const CONDITION_EMOJI: Record<string, string> = {
-  clear: "☀️",
-  cloudy: "☁️",
-  fog: "🌫️",
-  rain: "🌧️",
-  snow: "❄️",
-};
-
-// Custom tooltip for the Recharts chart
 function CustomTooltip({
   active,
   payload,
@@ -56,14 +44,19 @@ function CustomTooltip({
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-slate-700 bg-slate-900/95 p-3 text-xs shadow-xl backdrop-blur">
-      <p className="mb-2 font-medium text-slate-200">{label}</p>
+    <div className="rounded border border-rule bg-paper-raised p-3 font-sans text-xs shadow-sm">
+      <p className="mb-1.5 font-medium text-ink">{label}</p>
       {payload.map((entry) => (
         <div key={entry.name} className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full" style={{ background: entry.color }} />
-          <span className="text-slate-400">{entry.name}:</span>
-          <span className="text-slate-100">
-            {entry.name.includes("Temp") ? `${Math.round(entry.value)}°C` : `${Math.round(entry.value)}%`}
+          <span
+            className="h-2 w-2 rounded-full"
+            style={{ background: entry.color }}
+          />
+          <span className="text-ink-mute">{entry.name}:</span>
+          <span className="sw-num text-ink">
+            {entry.name.includes("Temp")
+              ? `${Math.round(entry.value)}°C`
+              : `${Math.round(entry.value)}%`}
           </span>
         </div>
       ))}
@@ -75,11 +68,11 @@ export function ForecastPanel({ weather, loading }: ForecastPanelProps) {
   if (loading) {
     return (
       <div className="sw-card">
-        <div className="skeleton mb-4 h-5 w-32 rounded" />
-        <div className="skeleton h-48 w-full rounded" />
+        <div className="skeleton mb-4 h-4 w-32" />
+        <div className="skeleton h-48 w-full" />
         <div className="mt-4 grid grid-cols-7 gap-2">
           {Array.from({ length: 7 }).map((_, i) => (
-            <div key={i} className="skeleton h-20 rounded" />
+            <div key={i} className="skeleton h-20" />
           ))}
         </div>
       </div>
@@ -88,13 +81,12 @@ export function ForecastPanel({ weather, loading }: ForecastPanelProps) {
 
   if (!weather?.daily?.length) {
     return (
-      <div className="sw-card flex items-center justify-center py-16 text-slate-500 text-sm">
+      <div className="sw-card flex items-center justify-center py-16 font-sans text-sm text-ink-mute">
         No forecast data available
       </div>
     );
   }
 
-  // Build chart data from daily forecast
   const chartData = weather.daily.map((day) => ({
     day: formatDay(day.date),
     "Max Temp": day.temperature_max,
@@ -102,27 +94,33 @@ export function ForecastPanel({ weather, loading }: ForecastPanelProps) {
     "Precip. Prob.": day.precipitation_probability_max,
   }));
 
-  return (
-    <div className="sw-card animate-slide-up">
-      <h2 className="mb-4 text-sm font-medium text-slate-300">
-        7-Day Forecast
-        <span className="ml-2 provider-tag">ECMWF IFS via Open-Meteo</span>
-      </h2>
+  const TEMP_MAX = "#5a3e1b"; // accent
+  const TEMP_MIN = "#8a6a3e"; // accent soft
+  const PRECIP = "#c8bfa6"; // neutral panel
 
-      {/* Recharts temperature + precipitation chart */}
+  return (
+    <div className="sw-card">
+      <div className="mb-4 flex items-baseline justify-between gap-3">
+        <div className="sw-card-heading">7-day forecast</div>
+        <span className="provider-tag">ECMWF IFS via Open-Meteo</span>
+      </div>
+
       <div className="mb-6 h-52 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+          <ComposedChart
+            data={chartData}
+            margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5ddc9" />
             <XAxis
               dataKey="day"
-              tick={{ fontSize: 11, fill: "#94a3b8" }}
-              axisLine={{ stroke: "#334155" }}
+              tick={{ fontSize: 11, fill: "#5a5a5a" }}
+              axisLine={{ stroke: "#c8bfa6" }}
               tickLine={false}
             />
             <YAxis
               yAxisId="temp"
-              tick={{ fontSize: 11, fill: "#94a3b8" }}
+              tick={{ fontSize: 11, fill: "#5a5a5a" }}
               axisLine={false}
               tickLine={false}
               unit="°"
@@ -130,7 +128,7 @@ export function ForecastPanel({ weather, loading }: ForecastPanelProps) {
             <YAxis
               yAxisId="precip"
               orientation="right"
-              tick={{ fontSize: 11, fill: "#94a3b8" }}
+              tick={{ fontSize: 11, fill: "#5a5a5a" }}
               axisLine={false}
               tickLine={false}
               unit="%"
@@ -138,60 +136,69 @@ export function ForecastPanel({ weather, loading }: ForecastPanelProps) {
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              wrapperStyle={{ fontSize: "11px", color: "#94a3b8", paddingTop: "8px" }}
+              wrapperStyle={{
+                fontSize: "11px",
+                color: "#5a5a5a",
+                paddingTop: "8px",
+                fontFamily: "Inter, system-ui, sans-serif",
+              }}
             />
-            {/* Precipitation probability as background bars */}
             <Bar
               yAxisId="precip"
               dataKey="Precip. Prob."
-              fill="#1e40af"
-              opacity={0.3}
+              fill={PRECIP}
               radius={[2, 2, 0, 0]}
             />
-            {/* Temperature range */}
             <Area
               yAxisId="temp"
               dataKey="Max Temp"
-              stroke="#f97316"
-              fill="#f9731615"
-              strokeWidth={2}
+              stroke={TEMP_MAX}
+              fill={TEMP_MAX}
+              fillOpacity={0.1}
+              strokeWidth={1.75}
               dot={false}
-              activeDot={{ r: 4, fill: "#f97316" }}
+              activeDot={{ r: 3.5, fill: TEMP_MAX }}
             />
             <Line
               yAxisId="temp"
               dataKey="Min Temp"
-              stroke="#38bdf8"
-              strokeWidth={2}
+              stroke={TEMP_MIN}
+              strokeWidth={1.5}
+              strokeDasharray="4 3"
               dot={false}
-              activeDot={{ r: 4, fill: "#38bdf8" }}
+              activeDot={{ r: 3.5, fill: TEMP_MIN }}
             />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Daily cards */}
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
         {weather.daily.map((day) => {
-          const condition = wmoCodeToCondition(day.weather_code);
-          const emoji = CONDITION_EMOJI[condition] ?? "🌡️";
+          const label = wmoCodeToLabel(day.weather_code);
           return (
             <div
               key={day.date}
-              className="flex flex-col items-center rounded-lg bg-slate-800/50 p-2 text-center hover:bg-slate-700/50 transition-colors"
+              className="flex flex-col rounded border border-rule bg-paper-panel p-2.5 text-center"
             >
-              <span className="text-xs font-medium text-slate-300 mb-1">
+              <span className="font-sans text-xs font-medium text-ink">
                 {formatDay(day.date)}
               </span>
-              <span className="text-xl mb-1">{emoji}</span>
-              <span className="text-xs text-slate-200">
-                {Math.round(day.temperature_max)}°
+              <span
+                className="mt-1 font-sans text-xs leading-tight text-ink-mute"
+                title={`WMO ${day.weather_code}`}
+              >
+                {label}
               </span>
-              <span className="text-xs text-slate-500">
-                {Math.round(day.temperature_min)}°
-              </span>
+              <div className="mt-1.5 flex items-baseline justify-center gap-1.5">
+                <span className="sw-num text-sm font-semibold text-ink">
+                  {Math.round(day.temperature_max)}°
+                </span>
+                <span className="sw-num text-xs text-ink-faint">
+                  {Math.round(day.temperature_min)}°
+                </span>
+              </div>
               {day.precipitation_probability_max > 20 && (
-                <span className="mt-1 text-xs text-blue-400">
+                <span className="sw-num mt-1 font-sans text-xs text-ink-mute">
                   {day.precipitation_probability_max}%
                 </span>
               )}

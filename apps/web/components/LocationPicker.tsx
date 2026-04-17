@@ -1,11 +1,9 @@
 "use client";
 
 /**
- * LocationPicker — Cascading location search dropdown
- *
- * Uses Open-Meteo Geocoding API (free, no key required) for city search.
- * Privacy: No browser Geolocation API is ever used here.
- * The user explicitly chooses a location via text search.
+ * LocationPicker, cascading city search.
+ * Uses Open-Meteo geocoding (free, no key).
+ * Never calls navigator.geolocation.
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -18,7 +16,7 @@ interface LocationPickerProps {
 }
 
 export function LocationPicker({
-  currentLocation,
+  currentLocation: _currentLocation,
   onLocationChange,
 }: LocationPickerProps) {
   const [query, setQuery] = useState("");
@@ -28,7 +26,6 @@ export function LocationPicker({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Debounced search
   const doSearch = useCallback(async (q: string) => {
     if (q.length < 2) {
       setResults([]);
@@ -58,7 +55,6 @@ export function LocationPicker({
     setOpen(false);
   };
 
-  // Close on outside click
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -78,9 +74,16 @@ export function LocationPicker({
             setOpen(true);
             setTimeout(() => inputRef.current?.focus(), 50);
           }}
-          className="flex items-center gap-2 rounded-lg border border-sky-700/50 bg-sky-900/30 px-3 py-1.5 text-sm text-sky-300 hover:bg-sky-800/40 hover:border-sky-600 transition-colors"
+          className="inline-flex items-center gap-2 rounded-sm border border-rule bg-paper-raised px-3 py-1.5 font-sans text-sm text-ink-soft hover:border-accentSoft hover:text-ink"
         >
-          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="h-3.5 w-3.5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            aria-hidden="true"
+          >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.35-4.35" />
           </svg>
@@ -94,8 +97,8 @@ export function LocationPicker({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search city, e.g. Tokyo…"
-              className="w-full rounded-lg border border-sky-700/50 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 outline-none ring-0 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+              placeholder="Search city, e.g. Tokyo"
+              className="w-full rounded-sm border border-rule bg-paper-raised px-3 py-2 font-sans text-sm text-ink placeholder-ink-faint outline-none focus:border-accent"
               onKeyDown={(e) => {
                 if (e.key === "Escape") {
                   setOpen(false);
@@ -104,25 +107,22 @@ export function LocationPicker({
               }}
             />
             {searching && (
-              <div className="absolute right-2.5 top-2.5">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
-              </div>
+              <div className="absolute right-2.5 top-2.5 h-4 w-4 animate-spin rounded-full border-2 border-accent border-t-transparent" />
             )}
           </div>
 
-          {/* Dropdown results */}
           {results.length > 0 && (
-            <ul className="absolute z-50 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-slate-700 bg-slate-900 py-1 shadow-2xl">
+            <ul className="absolute z-50 mt-1 max-h-64 w-full overflow-auto rounded-sm border border-rule bg-paper-raised py-1 shadow-sm">
               {results.map((loc, i) => (
                 <li key={`${loc.lat}-${loc.lon}-${i}`}>
                   <button
                     onClick={() => handleSelect(loc)}
-                    className="flex w-full flex-col px-3 py-2 text-left hover:bg-slate-800 transition-colors"
+                    className="flex w-full flex-col px-3 py-2 text-left font-sans hover:bg-paper-panel"
                   >
-                    <span className="text-sm font-medium text-slate-100">
+                    <span className="text-sm font-medium text-ink">
                       {loc.city}
                     </span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-ink-mute">
                       {[loc.region, loc.country].filter(Boolean).join(", ")}
                     </span>
                   </button>
@@ -132,15 +132,18 @@ export function LocationPicker({
           )}
 
           {results.length === 0 && query.length >= 2 && !searching && (
-            <div className="absolute z-50 mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-3 text-sm text-slate-400 shadow-2xl">
-              No results for "{query}"
+            <div className="absolute z-50 mt-1 w-full rounded-sm border border-rule bg-paper-raised px-3 py-3 font-sans text-sm text-ink-mute shadow-sm">
+              No results for &ldquo;{query}&rdquo;
             </div>
           )}
 
-          {/* Cancel */}
           <button
-            onClick={() => { setOpen(false); setQuery(""); setResults([]); }}
-            className="mt-1.5 text-xs text-slate-500 hover:text-slate-300"
+            onClick={() => {
+              setOpen(false);
+              setQuery("");
+              setResults([]);
+            }}
+            className="mt-1.5 font-sans text-xs text-ink-faint hover:text-ink-mute"
           >
             Cancel
           </button>
