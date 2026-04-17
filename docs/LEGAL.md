@@ -8,10 +8,10 @@
 
 | Source | Legal Status | Usage in skywatch |
 |--------|-------------|-------------------|
-| Windy Webcams API | ✅ Permitted (ToS-compliant) | Full integration |
-| US DOT 511 feeds | ✅ Permitted (public domain) | Example integration |
-| NOAA/NWS cameras | ✅ Permitted (federal public data) | TODO stub |
-| Transport for NSW, TfL (UK) | ✅ Permitted (open data licenses) | TODO stub |
+| Windy Webcams API |  Permitted (ToS-compliant) | Full integration |
+| US DOT 511 feeds |  Permitted (public domain) | Example integration |
+| NOAA/NWS cameras |  Permitted (federal public data) | TODO stub |
+| Transport for NSW, TfL (UK) |  Permitted (open data licenses) | TODO stub |
 | Insecam | ❌ **NEVER USE** | Explicitly excluded |
 | Opentopia | ❌ **NEVER USE** | Explicitly excluded |
 | Any default-password IP cams | ❌ **NEVER USE** | Explicitly excluded |
