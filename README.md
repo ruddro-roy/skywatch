@@ -1,4 +1,4 @@
-# skywatch 🌤
+# skywatch 
 
 **Privacy-first · Hybrid AI · Computer-Vision Verified**
 
@@ -43,14 +43,14 @@ A public open-source weather prototype that fuses multiple AI forecast models wi
 │                               │                  │                 │
 │              ┌────────────────▼───┐    ┌─────────▼─────────────┐   │
 │              │   providers/       │    │   cameras/            │   │
-│              │ ✅ open_meteo      │    │ ☐ windy (key req.)    │   │
-│              │ ☐ openweathermap   │    │ ☐ dot_us 511          │   │
-│              │ ☐ nvidia_earth2    │    │ ☐ discovery           │   │
-│              │ ☐ metnet_stub      │    └─────────┬─────────────┘   │
+│              │  open_meteo      │      │  windy (key req.)    │   │
+│              │ openweathermap   │    │  dot_us 511          │   │
+│              │  nvidia_earth2    │    │  discovery           │   │
+│              │  metnet_stub      │    └─────────┬─────────────┘   │
 │              └────────────────────┘              │                 │
 │                                        ┌─────────▼─────────────┐   │
 │                                        │   vision/classifier   │   │
-│                                        │ ✅ HSV heuristic MVP  │   │
+│                                        │  HSV heuristic MVP  │   │
 │                                        │ ☐ EfficientNet-B0     │   │
 │                                        │ ☐ CLIP zero-shot      │   │
 │                                        └───────────────────────┘   │
@@ -72,18 +72,18 @@ External APIs (all optional except Open-Meteo)
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Open-Meteo forecast (7-day) | ✅ Working | ECMWF IFS-based, free, global |
-| IP → city geolocation | ✅ Working | ipapi.co, ephemeral, never logged |
-| Manual location picker | ✅ Working | Country → region → city dropdown |
-| Ensemble fusion layer | ✅ Working | Graceful with 1+ providers |
-| OpenWeatherMap provider | ⚠️ Key required | Stub returns mock if no key |
-| Windy webcam thumbnails | ⚠️ Key required | Stub returns empty list if no key |
-| US DOT 511 cameras | ⚠️ State-specific | UDOT example included |
-| CV heuristic classifier | ✅ Working | HSV + edge density, no model download |
-| EfficientNet-B0 classifier | 🔲 TODO | See vision/classifier.py |
-| CLIP zero-shot classifier | 🔲 TODO | See vision/classifier.py |
-| NVIDIA Earth-2 NIM | 🔲 Stub | Returns mock data, documents endpoint |
-| Google MetNet | 🔲 Stub | Placeholder, requires paid access |
+| Open-Meteo forecast (7-day) |  Working | ECMWF IFS-based, free, global |
+| IP → city geolocation |  Working | ipapi.co, ephemeral, never logged |
+| Manual location picker |  Working | Country → region → city dropdown |
+| Ensemble fusion layer |  Working | Graceful with 1+ providers |
+| OpenWeatherMap provider |  Key required | Stub returns mock if no key |
+| Windy webcam thumbnails |  Key required | Stub returns empty list if no key |
+| US DOT 511 cameras |  State-specific | UDOT example included |
+| CV heuristic classifier |  Working | HSV + edge density, no model download |
+| EfficientNet-B0 classifier |  | See vision/classifier.py |
+| CLIP zero-shot classifier |    | See vision/classifier.py |
+| NVIDIA Earth-2 NIM |  | Returns mock data, documents endpoint |
+| Google MetNet |  | Placeholder, requires paid access |
 
 ---
 
@@ -121,7 +121,7 @@ npm run dev
 
 ## What Works vs What's Stubbed
 
-### ✅ Works on day one (no keys)
+###  Works (no keys)
 
 - **Open-Meteo forecast**: Full 7-day hourly forecast via ECMWF IFS. Fetched live from `api.open-meteo.com`.
 - **IP geolocation**: City-level location via `ipapi.co`. Used only at request time, never persisted.
@@ -130,7 +130,7 @@ npm run dev
 - **CV heuristic classifier**: HSV color analysis + Sobel edge density classifies webcam frames into 5 conditions without any model download.
 - **Full frontend**: Dashboard with current conditions, 7-day forecast chart (Recharts), ensemble confidence bar, camera grid.
 
-### ⚠️ Needs API key
+### Needs API key
 
 - **OpenWeatherMap**: Set `OPENWEATHERMAP_API_KEY` — returns stubbed mock otherwise.
 - **Windy Webcams**: Set `WINDY_API_KEY` — returns empty camera list otherwise.
@@ -173,7 +173,7 @@ See [docs/PRIVACY.md](docs/PRIVACY.md) for the full privacy policy draft.
 
 ## Legal Notice — Camera Sources
 
-> ⚠️ **IMPORTANT**: Only legally-accessible public camera sources are used.
+>  **IMPORTANT**: Only legally-accessible public camera sources are used.
 >
 > **Permitted**: Windy Webcams API (ToS-compliant), US DOT 511 state feeds (public domain), NOAA/NWS cameras (federal public data).
 >
@@ -219,4 +219,4 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
-*skywatch is an independent open-source project and is not affiliated with NVIDIA, ECMWF, Google, or any commercial weather provider.*
+*skywatch is an independent open-source project and is not affiliated with any commercial weather provider.*
