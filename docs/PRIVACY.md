@@ -1,6 +1,6 @@
 # skywatch — Privacy Policy (Draft)
 
-*Last updated: 2025. This is a draft policy for the open-source skywatch project. Operators who deploy skywatch must review and adapt this policy for their specific deployment, jurisdiction, and any additional data processing they perform.*
+* This is a draft policy for the open-source skywatch project. Operators who deploy skywatch must review and adapt this policy for their specific deployment, jurisdiction, and any additional data processing they perform.*
 
 ---
 
