@@ -260,39 +260,42 @@
   <p class="byline">Version 0.1 · Captured April 17, 2026 · MIT licensed</p>
 
   <p class="lede">
-    skywatch is a small weather prototype. It pulls a 7-day forecast from Open-Meteo, resolves the user's city server-side from the IP without calling the browser Geolocation API, and can run a computer-vision check against public webcams. The screenshots below are straight captures from the running app.
+    skywatch is a small weather prototype. It pulls a 7-day forecast from Open-Meteo, resolves the user's city server-side from the IP without calling the browser Geolocation API, and can run a computer-vision check against public webcams. The figures below are taken directly from a local run of the app.
   </p>
 
   <h2 id="shots">Screenshots</h2>
 
   <figure class="figure-full">
     <img src="screenshots/02-hero-dhaka.png" alt="Hero view of skywatch showing Dhaka, 31°C, feels like 39°C." loading="eager" />
-    <figcaption>Figure 1. Hero view, Dhaka. Open-Meteo reading at 31°C, feels like 39°C.</figcaption>
+    <figcaption>Figure 1. Top of the dashboard, resolved to Dhaka from the IP. Current reading from Open-Meteo (ECMWF IFS).</figcaption>
   </figure>
 
   <figure class="figure-full">
     <img src="screenshots/01-dashboard-dhaka.png" alt="Full skywatch dashboard for Dhaka." loading="lazy" />
-    <figcaption>Figure 2. Full dashboard, Dhaka. 7-day chart, daily cards, and the cameras section.</figcaption>
+    <figcaption>Figure 2. The full dashboard for Dhaka: current conditions, ensemble panel, 7-day chart, daily cards, and the cameras section.</figcaption>
   </figure>
 
   <figure class="figure-full">
     <img src="screenshots/03-dashboard-tokyo.png" alt="skywatch dashboard switched to Tokyo." loading="lazy" />
-    <figcaption>Figure 3. Tokyo. Same session, different city.</figcaption>
+    <figcaption>Figure 3. The same dashboard after the user changed the city to Tokyo with the manual picker.</figcaption>
   </figure>
 
   <figure class="figure-full">
     <img src="screenshots/05-ensemble-forecast.png" alt="Close-up of the ensemble confidence panel." loading="lazy" />
-    <figcaption>Figure 4. Ensemble panel close-up.</figcaption>
+    <figcaption>Figure 4. The ensemble panel, with weights and per-provider readings. Three providers are inactive until keys are supplied.</figcaption>
   </figure>
 
   <figure class="figure-full">
     <img src="screenshots/04-cameras-section.png" alt="Cameras section showing the empty state." loading="lazy" />
-    <figcaption>Figure 5. Cameras section. Wired up and waiting for a Windy API key.</figcaption>
+    <figcaption>Figure 5. The nearby-cameras section. Wired end-to-end; stays empty until a Windy API key is present or a US DOT 511 feed is in range.</figcaption>
   </figure>
 
   <h2 id="camera">Live proof <span class="live-pill"><span class="dot"></span>Live</span></h2>
   <p>
-    The three panels below cross-check a real public webcam against the current Open-Meteo forecast for the same coordinates. Everything on this page is fetched by your browser when the page loads: the camera image, the forecast, and the timestamp. Reload the page and you get a fresh pair. There are no cached frames stored in the repo for this section.
+    Each panel below pairs the most recent frame from a public webcam with the Open-Meteo forecast for the same coordinates, both fetched by your browser at the moment this page opened. Nothing in this section is stored in the repository. Reload the page and you will get a newer pair. The UTC timestamp printed on each card is the single capture time we used to request both the camera frame and the forecast, so anyone can verify them independently.
+  </p>
+  <p>
+    Honest caveat. The webcam hosts publish frames on their own schedule (typically every few minutes to every 10 minutes). Our timestamp is the moment we asked; the actual frame you see was taken at or slightly before that moment, whenever the source last refreshed. That is the closest to real-time these public feeds allow.
   </p>
   <p class="live-meta" id="live-now">Loading current readings…</p>
 
@@ -300,15 +303,16 @@
   <figure class="figure-full">
     <div class="live-img-wrap" id="wrap-alsgard">
       <div class="spinner">Fetching current frame…</div>
-      <img id="img-alsgard" alt="Live E6 Alsgård webcam frame, currently loading" loading="lazy" />
+      <img id="img-alsgard" alt="Latest public webcam frame at E6 Alsgård, Nordland" loading="lazy" />
     </div>
-    <figcaption id="cap-alsgard">Live frame from Statens vegvesen, E6 Alsgård. 65.83°N, 13.31°E.</figcaption>
+    <figcaption id="cap-alsgard">E6 Alsgård, Nordland. 65.83°N, 13.31°E. Source: Statens vegvesen public traffic cameras.</figcaption>
   </figure>
   <div class="camera-card">
     <dl class="camera-meta" id="meta-alsgard">
-      <dt>Camera feed</dt><dd><a href="https://kamera.atlas.vegvesen.no/api/images/3000946_1">kamera.atlas.vegvesen.no/api/images/3000946_1</a>, Norwegian Licence for Open Government Data</dd>
-      <dt>Forecast (live)</dt><dd data-field="forecast">Loading…</dd>
-      <dt>Camera fetched</dt><dd data-field="ts">—</dd>
+      <dt>Capture time (UTC)</dt><dd data-field="capture-ts">—</dd>
+      <dt>Camera frame</dt><dd data-field="frame">Loading…</dd>
+      <dt>Forecast (same instant)</dt><dd data-field="forecast">Loading…</dd>
+      <dt>Source</dt><dd><a href="https://kamera.atlas.vegvesen.no/api/images/3000946_1">kamera.atlas.vegvesen.no/api/images/3000946_1</a>, Norwegian Licence for Open Government Data</dd>
     </dl>
   </div>
 
@@ -316,15 +320,16 @@
   <figure class="figure-full">
     <div class="live-img-wrap" id="wrap-aisaroaivi">
       <div class="spinner">Fetching current frame…</div>
-      <img id="img-aisaroaivi" alt="Live E6 Aisaroaivi webcam frame, currently loading" loading="lazy" />
+      <img id="img-aisaroaivi" alt="Latest public webcam frame at E6 Aisaroaivi, Finnmark" loading="lazy" />
     </div>
-    <figcaption id="cap-aisaroaivi">Live frame from Statens vegvesen, E6 Aisaroaivi near 70°N. 70.28°N, 24.59°E.</figcaption>
+    <figcaption id="cap-aisaroaivi">E6 Aisaroaivi, Finnmark. 70.28°N, 24.59°E. Source: Statens vegvesen public traffic cameras.</figcaption>
   </figure>
   <div class="camera-card">
     <dl class="camera-meta" id="meta-aisaroaivi">
-      <dt>Camera feed</dt><dd><a href="https://kamera.atlas.vegvesen.no/api/images/2000065_2">kamera.atlas.vegvesen.no/api/images/2000065_2</a>, NLOD</dd>
-      <dt>Forecast (live)</dt><dd data-field="forecast">Loading…</dd>
-      <dt>Camera fetched</dt><dd data-field="ts">—</dd>
+      <dt>Capture time (UTC)</dt><dd data-field="capture-ts">—</dd>
+      <dt>Camera frame</dt><dd data-field="frame">Loading…</dd>
+      <dt>Forecast (same instant)</dt><dd data-field="forecast">Loading…</dd>
+      <dt>Source</dt><dd><a href="https://kamera.atlas.vegvesen.no/api/images/2000065_2">kamera.atlas.vegvesen.no/api/images/2000065_2</a>, NLOD</dd>
     </dl>
   </div>
 
@@ -332,20 +337,21 @@
   <figure class="figure-full">
     <div class="live-img-wrap" id="wrap-chicago">
       <div class="spinner">Fetching current frame…</div>
-      <img id="img-chicago" alt="Live NOAA GLERL Chicago skyline webcam frame" loading="lazy" />
+      <img id="img-chicago" alt="Latest public webcam frame at NOAA GLERL Harrison-Dever Crib, Chicago" loading="lazy" />
     </div>
-    <figcaption id="cap-chicago">Live frame from NOAA Great Lakes Environmental Research Laboratory, Harrison-Dever Crib, Chicago.</figcaption>
+    <figcaption id="cap-chicago">NOAA Great Lakes Environmental Research Laboratory, Harrison-Dever Crib, Chicago. 41.98°N, 87.59°W.</figcaption>
   </figure>
   <div class="camera-card">
     <dl class="camera-meta" id="meta-chicago">
-      <dt>Camera feed</dt><dd><a href="https://www.glerl.noaa.gov/metdata/chi/chi01.jpg">glerl.noaa.gov/metdata/chi/chi01.jpg</a>, public domain (NOAA)</dd>
-      <dt>Forecast (live)</dt><dd data-field="forecast">Loading…</dd>
-      <dt>Camera fetched</dt><dd data-field="ts">—</dd>
+      <dt>Capture time (UTC)</dt><dd data-field="capture-ts">—</dd>
+      <dt>Camera frame</dt><dd data-field="frame">Loading…</dd>
+      <dt>Forecast (same instant)</dt><dd data-field="forecast">Loading…</dd>
+      <dt>Source</dt><dd><a href="https://www.glerl.noaa.gov/metdata/chi/chi01.jpg">glerl.noaa.gov/metdata/chi/chi01.jpg</a>, public domain (NOAA)</dd>
     </dl>
   </div>
 
   <p style="font-size: 0.85rem; color: #5a5a5a; margin-top: 1.5rem;">
-    A note on timing. The Norwegian cameras are above the Arctic Circle and in northern Norway, so between roughly 22:00 and 04:00 UTC you will see night frames. The Chicago camera is 6 time zones west and shows night from roughly 02:00 to 12:00 UTC. If you open the page in the middle of the night at all three locations, the frames will be dark, and that is itself a consistency check.
+    A note on timing. The Norwegian cameras sit above or near the Arctic Circle, so between roughly 22:00 and 04:00 UTC you will see night frames. The Chicago camera is six time zones west and shows night from roughly 02:00 to 12:00 UTC. If you open the page while all three locations are in darkness, the frames will be dark, and that itself is a consistency check.
   </p>
 
   <h2 id="status">Status</h2>
@@ -435,50 +441,65 @@ docker-compose up</code></pre>
   }
   function pad(n) { return String(n).padStart(2, "0"); }
 
-  const now = new Date();
-  const nowIso = now.getUTCFullYear() + "-" + pad(now.getUTCMonth()+1) + "-" + pad(now.getUTCDate())
-    + " " + pad(now.getUTCHours()) + ":" + pad(now.getUTCMinutes()) + " UTC";
-  document.getElementById("live-now").textContent = "Page loaded at " + nowIso + ". All three panels fetched from source when you opened this page.";
+  // One single capture moment shared across every camera and every forecast request.
+  // That is the value printed on each card, so anyone can match camera vs forecast vs wall clock.
+  const capture = new Date();
+  const captureUtc = capture.getUTCFullYear() + "-" + pad(capture.getUTCMonth()+1) + "-" + pad(capture.getUTCDate())
+    + " " + pad(capture.getUTCHours()) + ":" + pad(capture.getUTCMinutes()) + ":" + pad(capture.getUTCSeconds()) + " UTC";
+  const captureMs = capture.getTime();
+  document.getElementById("live-now").textContent =
+    "Capture time, one instant shared by every panel below: " + captureUtc + ". Reload for a newer pair.";
 
-  // Load each camera image with a cache-buster so the browser actually pulls a fresh frame.
-  const bust = Date.now();
+  function describeFetchedAt(deltaSec) {
+    if (deltaSec == null) return "";
+    if (deltaSec < 1) return " (fetched at capture time)";
+    return " (frame delivered " + deltaSec.toFixed(1) + " s after capture request)";
+  }
+
   cameras.forEach(cam => {
     const wrap = document.getElementById("wrap-" + cam.id);
     const img = document.getElementById("img-" + cam.id);
     const meta = document.getElementById("meta-" + cam.id);
-    const tsDd = meta.querySelector('[data-field="ts"]');
+    const tsDd = meta.querySelector('[data-field="capture-ts"]');
+    const frDd = meta.querySelector('[data-field="frame"]');
     const fcDd = meta.querySelector('[data-field="forecast"]');
+
+    tsDd.textContent = captureUtc;
 
     img.onload = () => {
       wrap.classList.add("loaded");
-      const t = new Date();
-      tsDd.textContent = t.toLocaleString(undefined, { timeZoneName: "short" });
+      const delta = (Date.now() - captureMs) / 1000;
+      frDd.textContent = "Latest frame published by source at or before " + captureUtc + describeFetchedAt(delta);
     };
     img.onerror = () => {
       wrap.classList.add("loaded");
-      wrap.querySelector(".spinner").style.display = "flex";
-      wrap.querySelector(".spinner").textContent = "Camera unreachable right now. Source may be temporarily down.";
+      const sp = wrap.querySelector(".spinner");
+      sp.style.display = "flex";
+      sp.textContent = "Camera unreachable right now. Source may be temporarily down.";
       img.style.display = "none";
-      tsDd.textContent = "Unreachable";
+      frDd.textContent = "Unreachable at " + captureUtc;
     };
-    img.src = cam.img + (cam.img.includes("?") ? "&" : "?") + "t=" + bust;
+    // Cache-buster keyed to the shared capture moment, not a per-image random, so every
+    // panel genuinely requests at the same moment.
+    img.src = cam.img + (cam.img.includes("?") ? "&" : "?") + "t=" + captureMs;
 
-    // Pull current forecast from Open-Meteo. Free, no key.
+    // Open-Meteo current conditions for the exact camera coordinates. Free, no key.
     const url = "https://api.open-meteo.com/v1/forecast"
       + "?latitude=" + cam.lat + "&longitude=" + cam.lon
       + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,cloud_cover,weather_code,wind_speed_10m,is_day"
       + "&timezone=UTC";
-    fetch(url)
+    fetch(url, { cache: "no-store" })
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(data => {
         const c = data.current || {};
         const label = wmoLabel[c.weather_code] || ("WMO code " + c.weather_code);
         fcDd.innerHTML =
           fmt(c.temperature_2m, 1) + " °C (feels " + fmt(c.apparent_temperature, 1) + " °C), "
-          + c.relative_humidity_2m + "% RH, " + c.cloud_cover + "% cloud, "
+          + c.relative_humidity_2m + " % RH, " + c.cloud_cover + " % cloud, "
           + fmt(c.wind_speed_10m, 1) + " km/h wind, "
           + "<em>" + label + "</em>, "
-          + (c.is_day ? "daytime" : "night");
+          + (c.is_day ? "daytime" : "night")
+          + ". Open-Meteo current, requested at " + captureUtc + ".";
       })
       .catch(() => { fcDd.textContent = "Forecast unreachable right now."; });
   });

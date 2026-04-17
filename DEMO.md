@@ -1,6 +1,6 @@
 # skywatch first demo (v0.1)
 
-Captured on April 17, 2026 from the running app. The screenshots below are straight captures, not mockups. The forecast data in them is whatever Open-Meteo returned at capture time.
+Captured on April 17, 2026 from a local run of the app. Every figure below is a direct capture of the dashboard rendering live data. The forecast values you see are whatever Open-Meteo returned at the moment of capture.
 
 ## What you are looking at
 
