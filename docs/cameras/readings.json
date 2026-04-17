@@ -1,0 +1,77 @@
+{
+  "captured_at_utc": "2026-04-17T06:15:00Z",
+  "cameras": [
+    {
+      "id": "norway-alsgard-e6",
+      "source": "Statens vegvesen (Norwegian Public Roads Administration)",
+      "source_url": "https://kamera.atlas.vegvesen.no/api/images/3000946_1",
+      "license": "Open data, Norwegian Licence for Open Government Data (NLOD)",
+      "location": {
+        "name": "E6 Alsgård, Nordland, Norway",
+        "lat": 65.83,
+        "lon": 13.31,
+        "elevation_m": 242
+      },
+      "image_timestamp_local": "2026-04-17 08:17:02 CEST",
+      "file": "norway-alsgard-e6.jpg",
+      "visual_description": "Daylight, dry road, overcast sky with some brightness, coniferous forest, no precipitation, no snow on road",
+      "open_meteo_forecast": {
+        "temperature_2m_c": 3.6,
+        "apparent_temperature_c": 1.1,
+        "relative_humidity_pct": 70,
+        "cloud_cover_pct": 29,
+        "wind_speed_kmh": 1.4,
+        "weather_code": 1,
+        "weather_code_description": "Mainly clear"
+      },
+      "match_assessment": "Forecast and camera agree: mostly clear to partly cloudy, cool (~3-4 C), dry conditions, light winds"
+    },
+    {
+      "id": "norway-aisaroaivi-skaidi",
+      "source": "Statens vegvesen (Norwegian Public Roads Administration)",
+      "source_url": "https://kamera.atlas.vegvesen.no/api/images/2000065_2",
+      "license": "Open data, Norwegian Licence for Open Government Data (NLOD)",
+      "location": {
+        "name": "E6 Aisaroaivi, Finnmark, Norway (towards Skaidi)",
+        "lat": 70.28,
+        "lon": 24.59,
+        "elevation_m": 325
+      },
+      "image_timestamp_local": "2026-04-17 08:16:16 CEST",
+      "file": "norway-aisaroaivi-skaidi.jpg",
+      "visual_description": "Arctic tundra landscape, heavy snow cover on ground, cleared road, mixed sun and high cloud, dry surface",
+      "open_meteo_forecast": {
+        "temperature_2m_c": 2.1,
+        "apparent_temperature_c": -0.5,
+        "relative_humidity_pct": 96,
+        "cloud_cover_pct": 80,
+        "wind_speed_kmh": 5.4,
+        "weather_code": 3,
+        "weather_code_description": "Overcast"
+      },
+      "match_assessment": "Consistent: near-freezing temperature explains snow on ground, high humidity and overcast match the hazy high-cloud look in frame"
+    },
+    {
+      "id": "chicago-glerl",
+      "source": "NOAA Great Lakes Environmental Research Laboratory",
+      "source_url": "https://www.glerl.noaa.gov/metdata/chi/chi01.jpg",
+      "license": "Public domain (U.S. federal government)",
+      "location": {
+        "name": "Harrison-Dever Crib, Chicago, Lake Michigan",
+        "lat": 41.98,
+        "lon": -87.59
+      },
+      "image_timestamp_local": "2026-04-17 01:00 CDT",
+      "file": "chicago-glerl-chi01.jpg",
+      "visual_description": "Night shot over Lake Michigan, near-black scene, no visible city lights in frame (overcast/foggy overhead), a single distant light dot",
+      "station_readings": {
+        "air_temp_c": 6.7,
+        "dew_point_c": 6.8,
+        "relative_humidity_pct": 100,
+        "wind_speed_kts": 0.0,
+        "wind_direction_deg": 95
+      },
+      "match_assessment": "Dew point equals air temperature at 100% humidity is the textbook fog signature; camera scene being near-black and featureless is consistent with overcast/foggy conditions at night"
+    }
+  ]
+}

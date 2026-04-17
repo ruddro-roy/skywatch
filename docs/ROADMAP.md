@@ -2,10 +2,10 @@
 
 ---
 
-## v0.1 — MVP (Current)
+## v0.1, MVP (Current)
 
-###  Completed
-- Open-Meteo provider (ECMWF IFS) — fully working, no key required
+### Completed
+- Open-Meteo provider (ECMWF IFS), fully working, no key required
 - Weighted ensemble layer with confidence intervals
 - IP-based city geolocation (ephemeral, privacy-safe)
 - Manual cascading location picker (country → region → city)
@@ -17,9 +17,9 @@
 - Docker Compose for single-command startup
 - Full legal and privacy documentation
 
-###  Known Gaps
+### Known Gaps
 - EfficientNet-B0 fine-tuning pipeline (scripts/train_classifier.py exists, model not trained)
-- NVIDIA Earth-2 NIM (stub only,  returns mock data)
+- NVIDIA Earth-2 NIM (stub only, returns mock data)
 - OpenWeatherMap (works if key provided, not stubbed with real fallback data)
 - Global camera discovery beyond Windy + UDOT
 
@@ -40,4 +40,4 @@
 
 - Federated skywatch instances: organisations can run private instances that share anonymised condition reports
 - Open training data pipeline: CVconditions observed by the app contribute to a public training dataset (opt-in, anonymised)
-- Hardware integration: Raspberry Pi + camera as a skywatch node,  plug in and join the network
+- Hardware integration: Raspberry Pi + camera as a skywatch node, plug in and join the network

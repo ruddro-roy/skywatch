@@ -1,112 +1,37 @@
-# skywatch 
+# skywatch
 
-**Privacy-first · Hybrid AI · Computer-Vision Verified**
-
-A public open-source weather prototype that fuses multiple AI forecast models with real-time computer-vision verification from legally-accessible public webcams — all without ever touching the browser Geolocation API or storing IP addresses.
+A small weather prototype that pulls a forecast from Open-Meteo and can layer in computer-vision checks against public webcams when keys are provided. Privacy is a design goal: no browser Geolocation API, no IP logging.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org)
-[![Next.js 15](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org)
-[![Open-Meteo](https://img.shields.io/badge/Forecast-Open--Meteo-green.svg)](https://open-meteo.com)
-[![First Demo](https://img.shields.io/badge/First%20Demo-v0.1-orange.svg)](DEMO.md)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org)
 
-> **📸 First demo available:** [Live demo site](https://ruddro-roy.github.io/skywatch/) · [Screenshots in DEMO.md](DEMO.md) — captured April 17, 2026 from the running app.
+First demo: [live page](https://ruddro-roy.github.io/skywatch/) · [DEMO.md](DEMO.md). Captured April 17, 2026.
 
----
+## What it does today
 
-## Architecture
+- Pulls a 7-day forecast from Open-Meteo (ECMWF IFS), no API key needed.
+- Resolves the user's city from server-side IP via ipapi.co and discards the IP.
+- Has a manual city picker using Open-Meteo's geocoding API.
+- Renders a dashboard with current conditions, a 7-day chart, and a camera grid.
+- Runs an HSV + Sobel heuristic on webcam frames as a basic cloud/clear check.
+- Has stub integrations for OpenWeatherMap, Windy webcams, and NVIDIA Earth-2 NIM that activate when keys are set.
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         BROWSER (Next.js 15)                        │
-│                                                                     │
-│  ┌──────────────────┐  ┌────────────────┐  ┌────────────────────┐  │
-│  │  LocationPicker  │  │ CurrentConditions│  │   ForecastPanel   │  │
-│  │ (country→region  │  │  (CV-verified) │  │ (ensemble + per-  │  │
-│  │    →city drop.)  │  └───────┬────────┘  │   model breakdown)│  │
-│  └────────┬─────────┘          │           └────────┬──────────┘  │
-│           │                    │                    │              │
-│  ┌────────▼────────────────────▼────────────────────▼──────────┐  │
-│  │                     lib/api.ts  (httpx client)               │  │
-│  └────────────────────────────┬─────────────────────────────────┘  │
-└───────────────────────────────│─────────────────────────────────────┘
-                                │  REST / JSON
-┌───────────────────────────────▼─────────────────────────────────────┐
-│                     FastAPI (Python 3.11+)                          │
-│                                                                     │
-│  ┌────────────────┐  ┌─────────────────┐  ┌────────────────────┐   │
-│  │  /api/geoip    │  │  /api/weather   │  │  /api/cameras      │   │
-│  │ IP→city ephem. │  │  fused forecast │  │  + CV labels       │   │
-│  └───────┬────────┘  └────────┬────────┘  └────────┬───────────┘   │
-│          │                    │                    │               │
-│  ┌───────▼────────┐  ┌────────▼────────────────────▼───────────┐   │
-│  │  geolocation   │  │              ensemble.py                 │   │
-│  │  (ipapi.co)    │  │  weighted fusion · confidence · stddev   │   │
-│  └────────────────┘  └────────┬──────────────────┬─────────────┘   │
-│                               │                  │                 │
-│              ┌────────────────▼───┐    ┌─────────▼─────────────┐   │
-│              │   providers/       │    │   cameras/            │   │
-│              │  open_meteo        │    │  windy (key req.)    │   │
-│              │ openweathermap     │    │  dot_us 511          │   │
-│              │  nvidia_earth2     │    │  discovery           │   │
-│              │  metnet_stub       │    └─────────┬─────────────┘   │
-│              └────────────────────┘              │                 │
-│                                        ┌─────────▼─────────────┐   │
-│                                        │   vision/classifier   │   │
-│                                        │  HSV heuristic MVP    │   │
-│                                        │  EfficientNet-B0      │   │
-│                                        │  CLIP zero-shot       │   │
-│                                        └───────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+The ensemble layer works with a single active provider. It does not do anything clever with just one model; it becomes useful once more providers are keyed in.
 
-External APIs (all optional except Open-Meteo)
-────────────────────────────────────────────────
-  Open-Meteo         ── free, no key, global forecast (ECMWF IFS)
-  ipapi.co           ── free tier, ephemeral city-level geo
-  OpenWeatherMap     ── free 1 000 req/day with API key
-  Windy Webcams API  ── cam thumbnails + metadata (key req.)
-  NVIDIA NGC NIM     ── Earth-2 / FourCastNet stub (key req.)
-  UDOT 511 / 511GA   ── US DOT cameras, public JSON feed
-```
-
----
-
-## Feature Matrix
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Open-Meteo forecast (7-day) |  Working | ECMWF IFS-based, free, global |
-| IP → city geolocation |  Working | ipapi.co, ephemeral, never logged |
-| Manual location picker |  Working | Country → region → city dropdown |
-| Ensemble fusion layer |  Working | Graceful with 1+ providers |
-| OpenWeatherMap provider |  Key required | Stub returns mock if no key |
-| Windy webcam thumbnails |  Key required | Stub returns empty list if no key |
-| US DOT 511 cameras |  State-specific | UDOT example included |
-| CV heuristic classifier |  Working | HSV + edge density, no model download |
-| EfficientNet-B0 classifier |  | See vision/classifier.py |
-| CLIP zero-shot classifier |    | See vision/classifier.py |
-| NVIDIA Earth-2 NIM |  | Returns mock data, documents endpoint |
-| Google MetNet |  | Placeholder, requires paid access |
-
----
-
-## Quickstart (3 commands)
+## Quickstart
 
 ```bash
-# 1. Clone and configure
-git clone https://github.com/your-org/skywatch.git && cd skywatch
-cp .env.example .env   # all keys are optional — works out of the box
-
-# 2. Start everything
+git clone https://github.com/ruddro-roy/skywatch.git
+cd skywatch
+cp .env.example .env
 docker-compose up --build
-
-# 3. Open browser
-open http://localhost:3000
+# open http://localhost:3000
 ```
 
-> **No API keys required for a working demo.** Open-Meteo and ipapi.co both have generous free tiers with no registration.
+No API keys are required to get the forecast and the dashboard running. Open-Meteo and ipapi.co have free tiers with no registration.
 
-### Local development (without Docker)
+### Without Docker
 
 ```bash
 # Backend
@@ -120,106 +45,59 @@ npm install
 npm run dev
 ```
 
----
+## Status
 
-## What Works vs What's Stubbed
-
-###  Works (no keys)
-
-- **Open-Meteo forecast**: Full 7-day hourly forecast via ECMWF IFS. Fetched live from `api.open-meteo.com`.
-- **IP geolocation**: City-level location via `ipapi.co`. Used only at request time, never persisted.
-- **Manual location picker**: Cascading dropdown using Open-Meteo Geocoding API for city search.
-- **Ensemble layer**: Weighted fusion works with a single active provider. Returns confidence intervals.
-- **CV heuristic classifier**: HSV color analysis + Sobel edge density classifies webcam frames into 5 conditions without any model download.
-- **Full frontend**: Dashboard with current conditions, 7-day forecast chart (Recharts), ensemble confidence bar, camera grid.
-
-### Needs API key
-
-- **OpenWeatherMap**: Set `OPENWEATHERMAP_API_KEY` — returns stubbed mock otherwise.
-- **Windy Webcams**: Set `WINDY_API_KEY` — returns empty camera list otherwise.
-- **NVIDIA Earth-2 NIM**: Set `NVIDIA_NGC_API_KEY` — returns mock forecast otherwise. Full NIM integration is a TODO.
-
-### 🔲 Future work (v0.2+)
-
-- EfficientNet-B0 / MobileNetV3 fine-tuned on FWID dataset
-- CLIP zero-shot classification via `open_clip`
-- LLM narration + TTS (v0.2)
-- Google MetNet integration (v0.3, requires paid API)
-- Mobile PWA (v0.4)
-
----
-
-## Configuration
-
-Copy `.env.example` to `.env` and fill in the keys you have:
-
-```bash
-cp .env.example .env
-```
-
-All keys are optional. See [.env.example](.env.example) for full documentation.
-
----
+| Feature | State |
+|---|---|
+| Open-Meteo 7-day forecast | Working, no key |
+| IP to city geolocation (ipapi.co) | Working, no key |
+| Manual city picker | Working |
+| Ensemble fusion | Working with 1 provider; more interesting with more |
+| OpenWeatherMap provider | Needs `OPENWEATHERMAP_API_KEY`, otherwise returns a stub |
+| Windy webcam thumbnails | Needs `WINDY_API_KEY`, otherwise empty list |
+| US DOT 511 cameras | State-specific; UDOT example included |
+| HSV + Sobel heuristic classifier | Working |
+| EfficientNet-B0 classifier | Not trained yet, see `vision/classifier.py` |
+| CLIP zero-shot classifier | Not wired yet, see `vision/classifier.py` |
+| NVIDIA Earth-2 NIM | Stub, returns mock data |
+| Google MetNet | Placeholder, no public API |
 
 ## Privacy
 
-skywatch is designed with privacy as a first principle:
+- The browser Geolocation API is never called.
+- The IP used for city resolution is discarded right after the lookup.
+- No cookies, no analytics by default.
+- No persistent location storage unless the user opts in.
 
-- **No browser Geolocation API** is ever called. Location is resolved server-side from IP at city level only.
-- **No IP–query pair logging**. The IP used for geolocation is discarded immediately after resolution.
-- **No user tracking**, cookies, or analytics by default.
-- **No persistent location storage** unless the user explicitly saves a preference.
+See [docs/PRIVACY.md](docs/PRIVACY.md).
 
-See [docs/PRIVACY.md](docs/PRIVACY.md) for the full privacy policy draft.
+## Camera sources
 
----
+Only public, legally-accessible feeds are used. In practice this means the Windy Webcams API (under its terms of service), US DOT 511 state feeds, and NOAA/NWS cameras. Aggregators of unsecured or default-password cameras (Insecam, Opentopia, etc.) are explicitly not used.
 
-## Legal Notice — Camera Sources
-
->  **IMPORTANT**: Only legally-accessible public camera sources are used.
->
-> **Permitted**: Windy Webcams API (ToS-compliant), US DOT 511 state feeds (public domain), NOAA/NWS cameras (federal public data).
->
-> **Never use**: Insecam, Opentopia, or any aggregator of unsecured/default-password IP cameras. These cameras have not consented to public access and using them is illegal in many jurisdictions.
-
-See [docs/LEGAL.md](docs/LEGAL.md) for detailed legal guidance with source citations.
-
----
+See [docs/LEGAL.md](docs/LEGAL.md).
 
 ## Contributing
 
-1. Fork the repo and create a feature branch (`git checkout -b feat/your-feature`)
-2. Run the test suite: `cd services/api && pytest`
-3. Ensure Python code passes `ruff check .` and `black --check .`
-4. Ensure TypeScript passes `cd apps/web && npm run lint`
-5. Open a pull request with a clear description
+1. Fork and branch from `main`.
+2. `cd services/api && pytest`
+3. `ruff check .` and `black --check .` for Python.
+4. `cd apps/web && npm run lint` for TypeScript.
+5. Open a PR with a clear description.
 
-### Priority contributions welcome
+Useful areas to help with:
 
-- Additional forecast providers (see `services/api/app/providers/base.py` for the interface)
-- Additional camera sources (see `services/api/app/cameras/base.py` for the interface)
-- Fine-tuned weather classifier training (see `services/api/app/vision/README.md`)
-- Translations / i18n for the frontend
-
----
+- Additional forecast providers (see `services/api/app/providers/base.py`).
+- Additional camera sources (see `services/api/app/cameras/base.py`).
+- Training the weather classifier (see `services/api/app/vision/README.md`).
+- Frontend i18n.
 
 ## Roadmap
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for the full versioned roadmap.
-
-| Version | Theme | ETA |
-|---------|-------|-----|
-| v0.1 (current) | MVP: Open-Meteo + heuristic CV | Now |
-| v0.2 | LLM narration, TTS, avatar anchor | Q3 2025 |
-| v0.3 | Real Earth-2 NIM inference | Q4 2025 |
-| v0.4 | Mobile PWA, offline support | Q1 2026 |
-
----
+See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
 
----
-
-*skywatch is an independent open-source project and is not affiliated with any commercial weather provider.*
+skywatch is an independent open-source project and is not affiliated with any commercial weather provider.

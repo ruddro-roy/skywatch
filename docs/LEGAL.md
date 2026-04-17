@@ -1,4 +1,4 @@
-# skywatch — Legal Guidance: Camera Sources
+# skywatch, Legal Guidance: Camera Sources
 
 > This document provides guidance on the legal and ethical use of public webcam data in skywatch. It is not legal advice. Consult a qualified attorney for jurisdiction-specific questions.
 
@@ -8,13 +8,13 @@
 
 | Source | Legal Status | Usage in skywatch |
 |--------|-------------|-------------------|
-| Windy Webcams API |  Permitted (ToS-compliant) | Full integration |
-| US DOT 511 feeds |  Permitted (public domain) | Example integration |
-| NOAA/NWS cameras |  Permitted (federal public data) | TODO stub |
-| Transport for NSW, TfL (UK) |  Permitted (open data licenses) | TODO stub |
-| Insecam |  **NEVER USE** | Explicitly excluded |
-| Opentopia |  **NEVER USE** | Explicitly excluded |
-| Any default-password IP cams |  **NEVER USE** | Explicitly excluded |
+| Windy Webcams API | Permitted (ToS-compliant) | Full integration |
+| US DOT 511 feeds | Permitted (public domain) | Example integration |
+| NOAA/NWS cameras | Permitted (federal public data) | TODO stub |
+| Transport for NSW, TfL (UK) | Permitted (open data licenses) | TODO stub |
+| Insecam | **NEVER USE** | Explicitly excluded |
+| Opentopia | **NEVER USE** | Explicitly excluded |
+| Any default-password IP cams | **NEVER USE** | Explicitly excluded |
 
 ---
 
@@ -22,10 +22,10 @@
 
 ### 1. Windy Webcams API
 
-**URL**: https://api.windy.com/webcams  
-**ToS**: https://api.windy.com/webcams/docs#terms  
-**License**: Commercial use requires paid plan; weather apps qualify for API access  
-**What's permitted**: Fetching thumbnail images, camera metadata (name, lat/lon, category), and weather condition tags via the official API.  
+**URL**: https://api.windy.com/webcams
+**ToS**: https://api.windy.com/webcams/docs#terms
+**License**: Commercial use requires paid plan; weather apps qualify for API access
+**What's permitted**: Fetching thumbnail images, camera metadata (name, lat/lon, category), and weather condition tags via the official API.
 **What's NOT permitted**: Storing images beyond the session, re-hosting thumbnails, scraping the Windy.com website directly.
 
 Key ToS provisions:
@@ -35,28 +35,28 @@ Key ToS provisions:
 
 ### 2. US Department of Transportation 511 Traffic Cameras
 
-**Reference**: https://www.transportation.gov/accessibility/511  
-**Legal basis**: 23 U.S.C. § 154 — federal highway data is public domain  
+**Reference**: https://www.transportation.gov/accessibility/511
+**Legal basis**: 23 U.S.C. § 154, federal highway data is public domain
 **State examples**:
-- Utah DOT (UDOT): https://udottraffic.utah.gov/ — JSON feed at `api.udottraffic.utah.gov`
-- Georgia 511: https://511ga.org — public camera feed (see `cameras/dot_us.py`)
+- Utah DOT (UDOT): https://udottraffic.utah.gov/, JSON feed at `api.udottraffic.utah.gov`
+- Georgia 511: https://511ga.org, public camera feed (see `cameras/dot_us.py`)
 - California: https://cwwp2.dot.ca.gov/documentation/cctv/cctv.htm
 
-**What's permitted**: Real-time fetching of camera images and metadata from official state DOT APIs for weather/safety informational purposes.  
+**What's permitted**: Real-time fetching of camera images and metadata from official state DOT APIs for weather/safety informational purposes.
 **Limitations**: Some state DOTs require a data sharing agreement for commercial use. skywatch's open-source, non-commercial use is generally covered.
 
 ### 3. NOAA / National Weather Service Cameras
 
-**Reference**: https://www.noaa.gov/information-technology/open-data-dissemination  
-**Legal basis**: U.S. federal government works are in the public domain (17 U.S.C. § 105)  
+**Reference**: https://www.noaa.gov/information-technology/open-data-dissemination
+**Legal basis**: U.S. federal government works are in the public domain (17 U.S.C. § 105)
 **What's permitted**: All NOAA and NWS camera imagery and data is public domain.
 
 ### 4. Other Public-Sector / Open-Data Cameras
 
 The following require per-jurisdiction verification but are generally permissible:
-- **Transport for NSW (Australia)**: Creative Commons license — https://opendata.transport.nsw.gov.au/
-- **Transport for London (TfL)**: Open Government License — https://tfl.gov.uk/info-for/open-data-users/
-- **Finnish Meteorological Institute**: CC BY 4.0 — https://en.ilmatieteenlaitos.fi/open-data
+- **Transport for NSW (Australia)**: Creative Commons license, https://opendata.transport.nsw.gov.au/
+- **Transport for London (TfL)**: Open Government License, https://tfl.gov.uk/info-for/open-data-users/
+- **Finnish Meteorological Institute**: CC BY 4.0, https://en.ilmatieteenlaitos.fi/open-data
 
 ---
 
@@ -67,7 +67,7 @@ The following require per-jurisdiction verification but are generally permissibl
 **Why it's prohibited**: Insecam aggregates unsecured IP cameras that were never intended for public access. These cameras use default manufacturer passwords (e.g., "admin"/"admin"). Accessing them:
 - Constitutes unauthorized access under the U.S. Computer Fraud and Abuse Act (18 U.S.C. § 1030)
 - Violates the UK Computer Misuse Act 1990
-- Violates GDPR Article 6 (lawful basis) in the EU — these cameras have not consented to public streaming
+- Violates GDPR Article 6 (lawful basis) in the EU, these cameras have not consented to public streaming
 - May constitute wiretapping under various state laws
 
 **References**:
@@ -76,7 +76,7 @@ The following require per-jurisdiction verification but are generally permissibl
 
 ### 2. Opentopia (opentopia.com)
 
-**Why it's prohibited**: Same category as Insecam — aggregates cameras with default credentials. Using this service:
+**Why it's prohibited**: Same category as Insecam, aggregates cameras with default credentials. Using this service:
 - Violates the same laws cited above
 - Exposes contributors and users to criminal and civil liability
 
@@ -107,10 +107,10 @@ In 2017, AccuWeather was found to be sending user location data (including Wi-Fi
 ### GDPR (EU/EEA users)
 
 - IP address is personal data under GDPR Article 4(1)
-- skywatch processes IP addresses lawfully under Article 6(1)(f) (legitimate interests — providing a weather service) but only ephemerally
+- skywatch processes IP addresses lawfully under Article 6(1)(f) (legitimate interests, providing a weather service) but only ephemerally
 - No IP is retained beyond the single request that triggered geolocation
 - Users in the EU have the right to use the manual location picker to avoid IP processing entirely
-- No data is transferred to third countries beyond the ephemeral ipapi.co lookup (ipapi.co is operated by apilayer — verify their DPA at https://apilayer.com/privacy)
+- No data is transferred to third countries beyond the ephemeral ipapi.co lookup (ipapi.co is operated by apilayer, verify their DPA at https://apilayer.com/privacy)
 
 ### CCPA (California users)
 

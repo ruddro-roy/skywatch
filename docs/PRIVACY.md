@@ -1,4 +1,4 @@
-# skywatch — Privacy Policy (Draft)
+# skywatch, Privacy Policy (Draft)
 
 * This is a draft policy for the open-source skywatch project. Operators who deploy skywatch must review and adapt this policy for their specific deployment, jurisdiction, and any additional data processing they perform.*
 
