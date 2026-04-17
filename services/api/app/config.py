@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     log_level: str = "INFO"
-    cors_origins: str = "http://localhost:3000,http://localhost:3001"
+    cors_origins: str = "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001"
 
     # ── Forecast providers ─────────────────────────────────────────────────
     open_meteo_base_url: str = "https://api.open-meteo.com/v1"

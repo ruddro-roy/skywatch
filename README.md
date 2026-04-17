@@ -8,6 +8,9 @@ A public open-source weather prototype that fuses multiple AI forecast models wi
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org)
 [![Open-Meteo](https://img.shields.io/badge/Forecast-Open--Meteo-green.svg)](https://open-meteo.com)
+[![First Demo](https://img.shields.io/badge/First%20Demo-v0.1-orange.svg)](DEMO.md)
+
+> **📸 First demo available:** [Live demo site](https://ruddro-roy.github.io/skywatch/) · [Screenshots in DEMO.md](DEMO.md) — captured April 17, 2026 from the running app.
 
 ---
 
