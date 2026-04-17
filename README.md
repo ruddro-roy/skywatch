@@ -43,16 +43,16 @@ A public open-source weather prototype that fuses multiple AI forecast models wi
 │                               │                  │                 │
 │              ┌────────────────▼───┐    ┌─────────▼─────────────┐   │
 │              │   providers/       │    │   cameras/            │   │
-│              │  open_meteo      │      │  windy (key req.)    │   │
-│              │ openweathermap   │    │  dot_us 511          │   │
-│              │  nvidia_earth2    │    │  discovery           │   │
-│              │  metnet_stub      │    └─────────┬─────────────┘   │
+│              │  open_meteo        │    │  windy (key req.)    │   │
+│              │ openweathermap     │    │  dot_us 511          │   │
+│              │  nvidia_earth2     │    │  discovery           │   │
+│              │  metnet_stub       │    └─────────┬─────────────┘   │
 │              └────────────────────┘              │                 │
 │                                        ┌─────────▼─────────────┐   │
 │                                        │   vision/classifier   │   │
-│                                        │  HSV heuristic MVP  │   │
-│                                        │ ☐ EfficientNet-B0     │   │
-│                                        │ ☐ CLIP zero-shot      │   │
+│                                        │  HSV heuristic MVP    │   │
+│                                        │  EfficientNet-B0      │   │
+│                                        │  CLIP zero-shot       │   │
 │                                        └───────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 
